@@ -95,11 +95,33 @@ routes.findSongs = function(req, res) {
       };
       request.get(tracksOptions, function (terror, tresponse, tbody) {
         var tracks = JSON.parse(tbody).items;
-        tracks = (tracks.map(function (t) {return t.track.href}));
+        tracks = selectTracks(tracks);
+
+        // TODO use the tracks as seed for recommendations api
+
         req.session.tracks = tracks;
         res.redirect('/playSong');
       })
     });
+}
+
+/**
+ * Selects random five tracks from the list.
+ * If the list contains less than 5 tracks,
+ * return all.
+ */
+var selectTracks = function(trackList) {
+    if(trackList.length >= 5) {
+        var selectedTracks = new Set();
+        while(selectedTracks.size !== 5) {
+            var track = randomChoice(trackList);
+            selectedTracks.add(track);
+        }
+        return Array.from(selectedTracks, function (t) {return t.track.href});
+        //return selectedTracks.map(function (t) {return t.track.href});
+    } else {
+        return trackList.map(function (t) {return t.track.href});
+    }
 }
 
 /**
