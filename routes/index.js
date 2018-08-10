@@ -30,6 +30,7 @@ routes.authed = function(req, res) {
 routes.getPlaylist = function(req, res) {
   console.log("ID: " + req.user.id);
   var uID = req.user.id;
+  console.log("The bearer token: " + req.user.token);
   var playlistsOptions = {
     url: 'https://api.spotify.com/v1/users/'+uID+'/playlists',
     headers: { Authorization: 'Bearer ' + req.user.token}
@@ -74,31 +75,20 @@ var randomChoice = function(arr) {
  * We hates how big this function is.
  */
 routes.findSongs = function(req, res) {
-  // 1. Get a random category from the front page.
-  var categoriesOptions = {
-    url: 'https://api.spotify.com/v1/browse/categories',
-    headers: { Authorization: 'Bearer ' + req.user.token }
-  };
-  request.get(categoriesOptions, function (error, response, body) {
-    var categories = JSON.parse(body).categories.items;
-    categories = (categories.map(function(c) {return c.href}));
-    var categoryURL = randomChoice(categories);
-    console.log("USING CATEGORY: " + categoryURL);
-
-    // 2. Get a random playlist from the chosen category.
+    // 1. Get a random playlist from the user's followed/owned playlists.
     var playlistOptions = {
-      url: categoryURL+'/playlists',
+      url: 'https://api.spotify.com/v1/me/playlists',
       headers: { Authorization: 'Bearer ' + req.user.token }
     };
     request.get(playlistOptions, function (perror, presponse, pbody) {
-      var playlists = JSON.parse(pbody).playlists.items;
+      var playlists = JSON.parse(pbody).items;
       var playlist = randomChoice(playlists);
       var playlistURL = playlist.href;
       req.session.playlistName = playlist.name;
       console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
       console.log("AKA: " + req.session.playlistName);
 
-      // 3. Get the full list of tracks from that playlist
+      // 2. Get the full list of tracks from that playlist
       var tracksOptions = {
         url: playlistURL+'/tracks',
         headers: { Authorization: 'Bearer ' + req.user.token }
@@ -110,7 +100,6 @@ routes.findSongs = function(req, res) {
         res.redirect('/playSong');
       })
     });
-  });
 }
 
 /**
