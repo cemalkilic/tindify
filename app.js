@@ -59,10 +59,10 @@ app.use(passport.session());
 
 app.get('/', index.home);
 app.get('/login',
-	passport.authenticate('spotify', {scope: 'user-read-private user-read-email playlist-modify-public playlist-modify-private'}),
+	passport.authenticate('spotify', {scope: 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private'}),
 	index.login);
 app.get('/authed',
-    passport.authenticate('spotify', {scope: 'user-read-private user-read-email playlist-modify-public playlist-modify-private'}),
+    passport.authenticate('spotify', {scope: 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private'}),
     index.authed);
 app.get('/getPlaylist', ensureAuthenticated, index.getPlaylist)
 app.get('/findSongs', ensureAuthenticated, index.findSongs);
