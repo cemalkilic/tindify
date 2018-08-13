@@ -132,7 +132,7 @@ var selectTracks = function(trackList) {
         }
         return Array.from(selectedTracks, function (t) {return t.track.id});
     } else {
-        return trackList.map(function (t) {return t.track.href});
+        return trackList.map(function (t) {return t.track.id});
     }
 }
 
