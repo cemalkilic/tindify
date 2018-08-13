@@ -1,3 +1,3 @@
 DONE-Get one of the playlists from user's followed/owned ones
--Songs based on the tracks from the selected playlist
+DONE-Songs based on the tracks from the selected playlist
 -Let the user select the playlist whose tracks are used as recommandation base

@@ -109,7 +109,7 @@ routes.findSongs = function(req, res) {
         };
         request.get(recomOptions, function(rerror, rresponse, rbody) {
           rbody = JSON.parse(rbody).tracks;
-            // get the links of the recommended songs
+          // get the links of the recommended songs
           tracks = (rbody.map(function (t) {return t.href}));
           req.session.tracks = tracks;
           res.redirect('/playSong');
@@ -131,7 +131,6 @@ var selectTracks = function(trackList) {
             selectedTracks.add(track);
         }
         return Array.from(selectedTracks, function (t) {return t.track.id});
-        //return selectedTracks.map(function (t) {return t.track.href});
     } else {
         return trackList.map(function (t) {return t.track.href});
     }
