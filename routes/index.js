@@ -90,19 +90,32 @@ routes.findSongs = function(req, res) {
 
       // 2. Get the full list of tracks from that playlist
       var tracksOptions = {
-        url: playlistURL+'/tracks',
+        url: playlistURL + '/tracks',
         headers: { Authorization: 'Bearer ' + req.user.token }
       };
+
       request.get(tracksOptions, function (terror, tresponse, tbody) {
         var tracks = JSON.parse(tbody).items;
         tracks = selectTracks(tracks);
 
-        // TODO use the tracks as seed for recommendations api
+        // api needs the track ids as comma seperated string
+        var tracksAsCommaSep= tracks.join(",");
 
-        req.session.tracks = tracks;
-        res.redirect('/playSong');
-      })
-    });
+        // 3. Get the recommendations
+        var recomOptions = {
+          url: "https://api.spotify.com/v1/recommendations",
+          headers: { Authorization: 'Bearer ' + req.user.token },
+          qs: {"seed_tracks": tracksAsCommaSep}
+        };
+        request.get(recomOptions, function(rerror, rresponse, rbody) {
+          rbody = JSON.parse(rbody).tracks;
+            // get the links of the recommended songs
+          tracks = (rbody.map(function (t) {return t.href}));
+          req.session.tracks = tracks;
+          res.redirect('/playSong');
+        })
+      });
+    })
 }
 
 /**
@@ -117,7 +130,7 @@ var selectTracks = function(trackList) {
             var track = randomChoice(trackList);
             selectedTracks.add(track);
         }
-        return Array.from(selectedTracks, function (t) {return t.track.href});
+        return Array.from(selectedTracks, function (t) {return t.track.id});
         //return selectedTracks.map(function (t) {return t.track.href});
     } else {
         return trackList.map(function (t) {return t.track.href});
