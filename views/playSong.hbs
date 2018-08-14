@@ -28,5 +28,18 @@
 		</a>
 	</h4>
 </span>
+<span id="playlists">
+    <h4>
+        Do you want to pull tracks from other playlist?
+        <ul class="playlists_list">
+            {{#each playlists}}
+                <li><a href="getTracks/{{this.id}}">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+    </h4>
+
+</span>
+
+
 
 <script type="text/javascript" src="javascripts/swipe.js"></script>

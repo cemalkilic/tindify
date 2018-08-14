@@ -67,6 +67,7 @@ app.get('/authed',
 app.get('/getPlaylist', ensureAuthenticated, index.getPlaylist)
 app.get('/findSongs', ensureAuthenticated, index.findSongs);
 app.get('/playSong', ensureAuthenticated, index.playSong);
+app.get('/getTracks/:playlistID', ensureAuthenticated, index.getTracks);
 
 app.post('/skipSong', index.skipSong);
 app.post('/addSong', index.addSong);

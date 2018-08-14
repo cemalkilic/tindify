@@ -69,52 +69,60 @@ var randomChoice = function(arr) {
 }
 
 /**
+ * Plays the songs from the given playlist.
+ */
+routes.getTracks = function(req, res) {
+  var playlistID = req.params.playlistID;
+  var tracksOptions = {
+      url: 'https://api.spotify.com/v1/playlists/' + playlistID +'/tracks',
+      headers: { Authorization: 'Bearer ' + req.user.token }
+  };
+
+  request.get(tracksOptions, function (terror, tresponse, tbody) {
+      var tracks = JSON.parse(tbody).items;
+      tracks = selectTracks(tracks);
+
+      // api needs the track ids as comma seperated string
+      var tracksAsCommaSep= tracks.join(",");
+
+      // Get the recommendations
+      var recomOptions = {
+          url: "https://api.spotify.com/v1/recommendations",
+          headers: { Authorization: 'Bearer ' + req.user.token },
+          qs: {"seed_tracks": tracksAsCommaSep}
+      };
+      request.get(recomOptions, function(rerror, rresponse, rbody) {
+          rbody = JSON.parse(rbody).tracks;
+          // get the links of the recommended songs
+          tracks = (rbody.map(function (t) {return t.href}));
+          req.session.tracks = tracks;
+          res.redirect('/playSong');
+      })
+  });
+}
+
+/**
  * Find the IDs of several tracks,
  * and store them in the session under req.session.tracks.
  * Then redirect to actually playing songs!
  * We hates how big this function is.
  */
 routes.findSongs = function(req, res) {
-    // 1. Get a random playlist from the user's followed/owned playlists.
+    // 1. Get a random playlist from the user's followed/owned playlists
     var playlistOptions = {
       url: 'https://api.spotify.com/v1/me/playlists',
       headers: { Authorization: 'Bearer ' + req.user.token }
     };
     request.get(playlistOptions, function (perror, presponse, pbody) {
       var playlists = JSON.parse(pbody).items;
+      req.session.playlists = playlists.map(function (t) {return {name:t.name, id: t.id}});
       var playlist = randomChoice(playlists);
       var playlistURL = playlist.href;
       req.session.playlistName = playlist.name;
       console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
       console.log("AKA: " + req.session.playlistName);
 
-      // 2. Get the full list of tracks from that playlist
-      var tracksOptions = {
-        url: playlistURL + '/tracks',
-        headers: { Authorization: 'Bearer ' + req.user.token }
-      };
-
-      request.get(tracksOptions, function (terror, tresponse, tbody) {
-        var tracks = JSON.parse(tbody).items;
-        tracks = selectTracks(tracks);
-
-        // api needs the track ids as comma seperated string
-        var tracksAsCommaSep= tracks.join(",");
-
-        // 3. Get the recommendations
-        var recomOptions = {
-          url: "https://api.spotify.com/v1/recommendations",
-          headers: { Authorization: 'Bearer ' + req.user.token },
-          qs: {"seed_tracks": tracksAsCommaSep}
-        };
-        request.get(recomOptions, function(rerror, rresponse, rbody) {
-          rbody = JSON.parse(rbody).tracks;
-          // get the links of the recommended songs
-          tracks = (rbody.map(function (t) {return t.href}));
-          req.session.tracks = tracks;
-          res.redirect('/playSong');
-        })
-      });
+      res.redirect('/getTracks/' + playlist.id);
     })
 }
 
@@ -153,7 +161,8 @@ routes.playSong = function(req, res) {
       trackName: tbody.name,
       artistName: artists,
       previewURL: tbody.preview_url,
-      playlistName: req.session.playlistName
+      playlistName: req.session.playlistName,
+      playlists: req.session.playlists
     });
   });
 }
