@@ -1,3 +1,4 @@
 DONE-Get one of the playlists from user's followed/owned ones
 DONE-Songs based on the tracks from the selected playlist
--Let the user select the playlist whose tracks are used as recommandation base
+DONE-Let the user select the playlist whose tracks are used as recommandation base
+-Update UI as Tinder cards
