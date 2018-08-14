@@ -98,10 +98,9 @@ routes.getUserPlaylists = function(req, res) {
  */
 routes.getRandomPlaylist = function(req, res) {
     var playlist = randomChoice(req.session.playlists);
-    req.session.playlistName = playlist.name;
     var playlistURL = playlist.href;
     console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
-    console.log("AKA: " + req.session.playlistName);
+    //console.log("AKA: " + req.session.playlistName);
 
     res.redirect('/getTracks/' + playlist.id);
 }
@@ -141,6 +140,11 @@ var selectTracks = function(trackList) {
 routes.getTracks = function(req, res) {
   // playlistID is a url named segment
   var playlistID = req.params.playlistID;
+
+  // playlist name for the front end
+  var index = req.session.playlists.findIndex(x => x.id === playlistID);
+  req.session.playlistName = req.session.playlists[index].name;
+
 
   var tracksOptions = {
       url: 'https://api.spotify.com/v1/playlists/' + playlistID +'/tracks',
