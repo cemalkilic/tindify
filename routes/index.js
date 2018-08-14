@@ -189,6 +189,7 @@ routes.playSong = function(req, res) {
     var artists = tbody.artists.map(function(a) {return a.name}).join(', ');
     res.render('playSong', {
       trackName: tbody.name,
+      albumCover: tbody.album.images[1].url,
       artistName: artists,
       previewURL: tbody.preview_url,
       playlistName: req.session.playlistName,
