@@ -63,9 +63,76 @@ routes.getPlaylist = function(req, res) {
   });
 }
 
-// Randomly select one element from an array.
+/**
+ * This is like a initial function.
+ * The list of playlists puller.
+ * It stores the followed/owned playlists of the user
+ * for future use. It redirect to getRandomPlaylist
+ */
+routes.getUserPlaylists = function(req, res) {
+    // Get a the list of playlists from the user's followed/owned playlists
+    var playlistOptions = {
+        url: 'https://api.spotify.com/v1/me/playlists',
+        headers: { Authorization: 'Bearer ' + req.user.token }
+    };
+    request.get(playlistOptions, function (perror, presponse, pbody) {
+        var playlists = JSON.parse(pbody).items;
+
+        // store playlist for the future use
+        req.session.playlists = playlists.map(function (t) {
+            return {
+                name: t.name,
+                id: t.id,
+                href: t.href
+            }
+        });
+
+        res.redirect('/getRandomPlaylist');
+    })
+}
+
+/**
+ * Get a random playlist from the stored playlists of the user.
+ * After selecting a random playlist, it redirects to
+ * /getTracks along with the id of the selected playlist.
+ */
+routes.getRandomPlaylist = function(req, res) {
+    var playlist = randomChoice(req.session.playlists);
+    req.session.playlistName = playlist.name;
+    var playlistURL = playlist.href;
+    console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
+    console.log("AKA: " + req.session.playlistName);
+
+    res.redirect('/getTracks/' + playlist.id);
+}
+
+/**
+ * Randomly select one element from an array.
+ */
 var randomChoice = function(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
+ * Selects random five tracks from the list.
+ * If the list contains less than 5 tracks,
+ * return all.
+ */
+var selectTracks = function(trackList) {
+    if (trackList.length >= 5) {
+        var selectedTracks = new Set();
+        while (selectedTracks.size !== 5) {
+            var track = randomChoice(trackList);
+            selectedTracks.add(track);
+        }
+        return Array.from(selectedTracks, function (t) {
+            return t.track.id
+        });
+    } else {
+        return trackList.map(function (t) {
+            return t.track.id
+        });
+    }
 }
 
 /**
@@ -101,67 +168,6 @@ routes.getTracks = function(req, res) {
           res.redirect('/playSong');
       })
   });
-}
-
-/**
- * This is like a initial function.
- * The list of playlists puller.
- * It stores the followed/owned playlists of the user
- * for future use. It redirect to getRandomPlaylist
- */
-routes.getUserPlaylists = function(req, res) {
-    // Get a the list of playlists from the user's followed/owned playlists
-    var playlistOptions = {
-      url: 'https://api.spotify.com/v1/me/playlists',
-      headers: { Authorization: 'Bearer ' + req.user.token }
-    };
-    request.get(playlistOptions, function (perror, presponse, pbody) {
-      var playlists = JSON.parse(pbody).items;
-
-      // store playlist for the future use
-      req.session.playlists = playlists.map(function (t) {
-        return {
-          name: t.name,
-          id: t.id,
-          href: t.href
-        }
-      });
-
-      res.redirect('/getRandomPlaylist');
-    })
-}
-
-/**
- * Get a random playlist from the stored playlists of the user.
- * After selecting a random playlist, it redirects to
- * /getTracks along with the id of the selected playlist.
- */
-routes.getRandomPlaylist = function(req, res) {
-  var playlist = randomChoice(req.session.playlists);
-  req.session.playlistName = playlist.name;
-  var playlistURL = playlist.href;
-  console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
-  console.log("AKA: " + req.session.playlistName);
-
-  res.redirect('/getTracks/' + playlist.id);
-}
-
-/**
- * Selects random five tracks from the list.
- * If the list contains less than 5 tracks,
- * return all.
- */
-var selectTracks = function(trackList) {
-    if(trackList.length >= 5) {
-        var selectedTracks = new Set();
-        while(selectedTracks.size !== 5) {
-            var track = randomChoice(trackList);
-            selectedTracks.add(track);
-        }
-        return Array.from(selectedTracks, function (t) {return t.track.id});
-    } else {
-        return trackList.map(function (t) {return t.track.id});
-    }
 }
 
 /**
