@@ -9,7 +9,7 @@ var skipSong = function() {
 		.done(function(data, status) {
 			console.log(data);
 			if (data=="0") {
-				window.location.replace('/findSongs');
+				window.location.replace('/getUserPlaylists');
 			} else {
 				window.location.replace('/playSong');
 			}

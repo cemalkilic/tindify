@@ -25,7 +25,7 @@ routes.authed = function(req, res) {
  * The first step of the swipe-prep process.
  * Sets the session variable pID to be the ID of the user's Tindify playlist.
  * If the user does not have a Tindify playlist, create one.
- * After retrieving the playlist ID, redirect to /findSongs
+ * After retrieving the playlist ID, redirect to /getUserPlaylists
  */
 routes.getPlaylist = function(req, res) {
   console.log("ID: " + req.user.id);
@@ -44,7 +44,7 @@ routes.getPlaylist = function(req, res) {
     if (correct.length) {
       // If the playlist already exists, then log its id and redirect to the next step.
       req.session.pID = correct[0].id;
-      res.redirect('/findSongs');
+      res.redirect('/getUserPlaylists');
     } else {
       // Otherwise, create a new playlist (POST request), log its id, and redirect.
       var newPlaylistOptions = {
@@ -57,7 +57,7 @@ routes.getPlaylist = function(req, res) {
       console.log(newPlaylistOptions);
       request.post(newPlaylistOptions, function(nerror, nresponse, nbody) {
         req.session.pID = JSON.parse(nbody).id;
-        res.redirect('/findSongs');
+        res.redirect('/getUserPlaylists');
       });
     }
   });
@@ -74,6 +74,7 @@ var randomChoice = function(arr) {
 routes.getTracks = function(req, res) {
   // playlistID is a url named segment
   var playlistID = req.params.playlistID;
+
   var tracksOptions = {
       url: 'https://api.spotify.com/v1/playlists/' + playlistID +'/tracks',
       headers: { Authorization: 'Bearer ' + req.user.token }
@@ -103,30 +104,46 @@ routes.getTracks = function(req, res) {
 }
 
 /**
- * Find the IDs of several tracks,
- * and store them in the session under req.session.tracks.
- * Then redirect to actually playing songs!
- * We hates how big this function is.
+ * This is like a initial function.
+ * The list of playlists puller.
+ * It stores the followed/owned playlists of the user
+ * for future use. It redirect to getRandomPlaylist
  */
-routes.findSongs = function(req, res) {
-    // 1. Get a random playlist from the user's followed/owned playlists
+routes.getUserPlaylists = function(req, res) {
+    // Get a the list of playlists from the user's followed/owned playlists
     var playlistOptions = {
       url: 'https://api.spotify.com/v1/me/playlists',
       headers: { Authorization: 'Bearer ' + req.user.token }
     };
     request.get(playlistOptions, function (perror, presponse, pbody) {
       var playlists = JSON.parse(pbody).items;
-      var playlist = randomChoice(playlists);
-      var playlistURL = playlist.href;
-      req.session.playlistName = playlist.name;
-      console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
-      console.log("AKA: " + req.session.playlistName);
 
-      // to list the playlist for frontend
-      req.session.playlists = playlists.map(function (t) {return {name:t.name, id: t.id}});
+      // store playlist for the future use
+      req.session.playlists = playlists.map(function (t) {
+        return {
+          name: t.name,
+          id: t.id,
+          href: t.href
+        }
+      });
 
-      res.redirect('/getTracks/' + playlist.id);
+      res.redirect('/getRandomPlaylist');
     })
+}
+
+/**
+ * Get a random playlist from the stored playlists of the user.
+ * After selecting a random playlist, it redirects to
+ * /getTracks along with the id of the selected playlist.
+ */
+routes.getRandomPlaylist = function(req, res) {
+  var playlist = randomChoice(req.session.playlists);
+  req.session.playlistName = playlist.name;
+  var playlistURL = playlist.href;
+  console.log("USING PLAYLIST: " + JSON.stringify(playlistURL));
+  console.log("AKA: " + req.session.playlistName);
+
+  res.redirect('/getTracks/' + playlist.id);
 }
 
 /**
