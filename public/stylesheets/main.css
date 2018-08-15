@@ -95,7 +95,7 @@ div#player {
 }
 #skipSong {
   float: left;
-  background-image: url(../images/x.png);
+  /*background-image: url(../images/x.png);*/
   font-size: 18px;
   font-style: italic;
   text-align: center;
@@ -108,7 +108,7 @@ div#player {
 }
 #addSong {
   float: right;
-  background-image: url(../images/check.png);
+  /*background-image: url(../images/check.png);*/
   font-size: 18px;
   font-style: italic;
   text-align: center;
