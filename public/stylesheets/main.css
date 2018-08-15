@@ -79,6 +79,11 @@ h4 {
 #changePlaylist {
   text-decoration: underline;
 }
+#albumCover {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 div#main p {
   font-family: 'Roboto', sans-serif;
