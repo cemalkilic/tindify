@@ -125,11 +125,11 @@ div#player {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 400px;
-  height: 500px;
+  width: 30.6rem;
+  height: 40rem;
   margin-left: -15.3rem;
   margin-top: -27rem;
-  background: #42abf6;
+  background: #FF235F;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 .demo__header {
@@ -139,7 +139,7 @@ div#player {
 .demo__content {
   overflow: hidden;
   position: relative;
-  height: 48rem;
+  height: 40rem;
   padding-top: 4.5rem;
   user-select: none;
 }
@@ -218,7 +218,7 @@ div#player {
 }
 .demo__card__btm {
   height: 11.5rem;
-  background: #fff;
+  background: #ff688d;
 }
 .demo__card__we {
   text-align: center;
@@ -259,10 +259,10 @@ div#player {
   border-top-right-radius: 1.5rem;
 }
 .demo__card__choice.m--reject {
-  background: #ff945a;
+  background: #B20735;
 }
 .demo__card__choice.m--like {
-  background: #b1da96;
+  background: #00B217;
 }
 .demo__card__choice.m--like:after {
   transform: scaleY(-1);
