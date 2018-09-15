@@ -72,7 +72,7 @@ routes.getPlaylist = function(req, res) {
 routes.getUserPlaylists = function(req, res) {
     // Get a the list of playlists from the user's followed/owned playlists
     var playlistOptions = {
-        url: 'https://api.spotify.com/v1/me/playlists',
+        url: 'https://api.spotify.com/v1/me/playlists?limit=50',
         headers: { Authorization: 'Bearer ' + req.user.token }
     };
     request.get(playlistOptions, function (perror, presponse, pbody) {
