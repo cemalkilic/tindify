@@ -29,7 +29,7 @@ app.use(session({
 
 var client_id = process.env.SPOTIFY_KEY;
 var client_secret = process.env.SPOTIFY_SECRET;
-var callbackURL = "http://localhost:3000/authed";
+var callbackURL = process.env.SPOTIFY_CALLBACK_URI;
 
 passport.serializeUser(function(user, done) {
 	done(null, user);
