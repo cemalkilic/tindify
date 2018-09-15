@@ -15,9 +15,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 You need to install the software below:
 
-```
-Node.js
-```
+* Node.js
+
 
 ### Installing
 
@@ -41,7 +40,7 @@ a playlist of the user's is used - as you set some options for Tinder :)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 
 
