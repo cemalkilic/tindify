@@ -25,14 +25,14 @@
 	<h4>
 		Currently playing recommended tracks based on the songs from '{{playlistName}}'.
 		<a href="getRandomPlaylist" id="changePlaylist">
-			(Want a different sound?)
+			(Want a different sound from another playlist?)
 		</a>
 	</h4>
 </span>
 <hr>
-<span id="playlists">
+<div id="playlists">
     <h4>
-        Do you want to pull tracks from other playlist?
+        Or simply, select a playlist to play similar songs from?
         <ul class="playlists_list">
             {{#each playlists}}
                 <li><a href="getTracks/{{this.id}}">{{this.name}}</a></li>
@@ -40,7 +40,7 @@
         </ul>
     </h4>
 
-</span>
+</div>
 
 
 

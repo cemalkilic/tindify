@@ -120,3 +120,8 @@ div#player {
   border-radius: 3px;
   border-color: transparent;
 }
+
+#playlists {
+  overflow:auto;
+  max-height: 20vh;
+}
