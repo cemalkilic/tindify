@@ -30,6 +30,7 @@ You need to install the software below:
 ## Authors
 
 * **Greg Edelston** - *Initial work* - [Gredelston](https://github.com/Gredelston)
+* **Philip Seger** - [segerphilip](https://github.com/segerphilip)
 * **Cemal Kılıç**
 
 Original repo can be found [here](https://github.com/Gredelston/Tindify/).
