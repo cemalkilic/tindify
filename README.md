@@ -23,7 +23,7 @@ You need to install the software below:
 
 * Clone the repo.
 * Install the required packages by ``` npm install ```
-* Make sure you set the parameters ``` SPOTIFY_KEY ```, ```SPOTIFY_SECRET``` and ```SPOTIFY_CALLBACK_URI``` correctly. You should use the information from Spotify Web API.
+* Make sure you set the environment variables ``` SPOTIFY_KEY ```, ```SPOTIFY_SECRET``` and ```SPOTIFY_CALLBACK_URI``` correctly. You should use the information from Spotify Web API.
 * Start by ```npm start```
 
 
