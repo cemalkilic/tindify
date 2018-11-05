@@ -14,6 +14,11 @@ routes.home = function(req, res) {
   res.render('home', {title: 'Tindify'});
 }
 
+routes.getCredits = function(req, res) {
+    console.log("Credits page");
+    res.render('credits');
+}
+
 /**
  * Callback URI for when the user is logged in.
  */

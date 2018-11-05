@@ -58,6 +58,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', index.home);
+app.get('/credits', index.getCredits)
 app.get('/login',
 	passport.authenticate('spotify', {scope: 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private'}),
 	index.login);
